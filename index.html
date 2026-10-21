@@ -448,14 +448,45 @@ Value Hunt
 
             html += `
 <div style="
+    display:flex;
+    align-items:center;
     margin-left:25px;
-    margin-top:8px;
-    color:#bbbbbb;
-    font-family:'Cinzel', serif;
-    font-size:14px;
 ">
-    ${region}
+
+    <span
+        style="
+            cursor:pointer;
+            width:20px;
+            display:inline-block;
+        "
+        onclick="toggleRegion(
+            'region${landIndex}${regionIndex}',
+            this
+        )">
+
+        ▶
+
+    </span>
+
+    <span
+        style="
+            cursor:pointer;
+            color:#bbbbbb;
+            font-family:'Cinzel', serif;
+            font-size:14px;
+            padding-left:5px;
+        "
+        onclick="showRegion('${region}')">
+
+        ${region}
+
+    </span>
+
 </div>
+
+<div
+    id="region${landIndex}${regionIndex}"
+    class="hidden">
 `;
 
             const byer = [...new Set(
@@ -484,6 +515,8 @@ Value Hunt
 
             });
 
+        html += `</div>`;
+            
         });
 
         html += `</div>`;
@@ -537,6 +570,25 @@ function toggleMenu(id, btn){
         }
 
     });
+
+    const element =
+        document.getElementById(id);
+
+    if(element.style.display === "block"){
+
+        element.style.display = "none";
+        btn.innerHTML = "▶";
+
+    }else{
+
+        element.style.display = "block";
+        btn.innerHTML = "▼";
+
+    }
+
+}
+
+function toggleRegion(id, btn){
 
     const element =
         document.getElementById(id);
@@ -872,6 +924,54 @@ ${r.billede ? `
     });
 
     document.getElementById('content').innerHTML = html;
+}
+
+function showRegion(region){
+
+    const regionRestaurants =
+        restaurants.filter(r =>
+
+            r.region === region &&
+            activeCategories[r.kategori]
+
+        );
+
+    let html = `
+    <h1>${region}</h1>
+    <br>
+    `;
+
+    regionRestaurants.forEach(r => {
+
+        html += `
+        <div class="info-card"
+             style="
+                margin-bottom:20px;
+                cursor:pointer;
+             "
+             onclick="showRestaurant('${r.restaurant}')">
+
+            <h2>${r.restaurant}</h2>
+
+            ${r.billede ? `
+            <img
+                src="${r.billede}"
+                style="
+                    width:100%;
+                    max-height:250px;
+                    object-fit:cover;
+                    border-radius:12px;
+                ">
+            ` : ''}
+
+        </div>
+        `;
+
+    });
+
+    document.getElementById('content').innerHTML =
+        html;
+
 }
     
 function showRestaurant(name){
