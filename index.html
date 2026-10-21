@@ -494,6 +494,18 @@ function toggleCategory(category){
 
     buildMenu();
 
+    if(currentPage.type === "country"){
+        showCountry(currentPage.value);
+    }
+
+    if(currentPage.type === "city"){
+        showCity(currentPage.value);
+    }
+
+    if(currentPage.type === "nearby"){
+        showNearbyMap();
+    }
+
 }
 
 function toggleMenu(id, btn){
