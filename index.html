@@ -435,50 +435,22 @@ Value Hunt
 <div id="land${landIndex}" class="hidden">
 `;
 
-       const regioner = [...new Set(
+       const byer = [...new Set(
 
     restaurants
     .filter(r => r.land === land)
-    .map(r => r.region)
+    .map(r => r.by)
 
 )].sort((a, b) => a.localeCompare(b, 'da'));
 
-       regioner.forEach((region,regionIndex)=>{
+        byer.forEach((by,byIndex)=>{
 
             html += `
-            <div style="
-    margin-left:25px;
-    padding:6px 0;
-    color:#cccccc;
-    font-weight:bold;
-">
-    ${region}
-</div>
-`;
+            <button class="toggle city"
+onclick="showCity('${by}')">
+    ${by}
+</button>
 
-const byer = [...new Set(
-
-    restaurants
-    .filter(r =>
-        r.land === land &&
-        r.region === region
-    )
-    .map(r => r.by)
-
-)].sort((a, b) => a.localeCompare(b, 'da')); 
-
-           byer.forEach((by,byIndex)=>{
-
-    html += `
-    <button class="toggle city"
-        onclick="showCity('${by}')">
-        ${by}
-    </button>
-    `;
-
-    ...
-});
-           
             <div id="by${landIndex}${byIndex}"
                  class="hidden">
             `;
