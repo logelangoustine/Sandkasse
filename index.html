@@ -232,6 +232,12 @@ let currentPage = {
 let previousPage = null;
 let previousScrollY = 0;
 
+    let activeCategories = {
+    "Fine Dining": true,
+    "Side Dish": true,
+    "Value Hunt": true
+};
+
 function t(da, en){
     return currentLanguage === "da" ? da : en;
 }
@@ -336,6 +342,40 @@ function buildMenu(){
     let html = '';
 
     html += `
+<div style="margin-bottom:20px;">
+
+<label>
+<input
+    type="checkbox"
+    ${activeCategories["Fine Dining"] ? "checked" : ""}
+    onchange="toggleCategory('Fine Dining')">
+Fine Dining
+</label>
+
+<br>
+
+<label>
+<input
+    type="checkbox"
+    ${activeCategories["Side Dish"] ? "checked" : ""}
+    onchange="toggleCategory('Side Dish')">
+Side Dish
+</label>
+
+<br>
+
+<label>
+<input
+    type="checkbox"
+    ${activeCategories["Value Hunt"] ? "checked" : ""}
+    onchange="toggleCategory('Value Hunt')">
+Value Hunt
+</label>
+
+</div>
+`;
+
+    html += `
 <div
     style="
         padding:10px 0;
@@ -415,8 +455,15 @@ onclick="showCity('${by}')">
             `;
 
             restaurants
-            .filter(r => r.land === land && r.by === by)
-            .forEach(r => {
+.filter(r =>
+
+    r.land === land &&
+    r.by === by &&
+
+    activeCategories[r.kategori]
+
+)
+.forEach(r => {
 
                 html += `
                 <div class="restaurant"
@@ -436,6 +483,15 @@ onclick="showCity('${by}')">
     });
 
     menu.innerHTML = html;
+
+}
+
+function toggleCategory(category){
+
+    activeCategories[category] =
+        !activeCategories[category];
+
+    buildMenu();
 
 }
 
