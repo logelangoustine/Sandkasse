@@ -444,7 +444,7 @@ Value Hunt
 
         )].sort((a, b) => a.localeCompare(b, 'da'));
 
-        regioner.forEach(region => {
+        regioner.forEach((region, regionIndex) => {
 
             html += `
 <div style="
@@ -538,6 +538,11 @@ function toggleCategory(category){
         showCountry(currentPage.value);
     }
 
+    if(currentPage.type === "region"){
+    showRegion(currentPage.value);
+
+    }
+    
     if(currentPage.type === "city"){
         showCity(currentPage.value);
     }
@@ -928,6 +933,11 @@ ${r.billede ? `
 
 function showRegion(region){
 
+    currentPage = {
+    type: "region",
+    value: region
+};
+    
     const regionRestaurants =
         restaurants.filter(r =>
 
