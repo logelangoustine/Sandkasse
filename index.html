@@ -2,6 +2,16 @@
 <html lang="da">
 <head>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+
 <link
 rel="stylesheet"
 href="https://unpkg.com/leaflet/dist/leaflet.css"
@@ -15,7 +25,24 @@ href="https://unpkg.com/leaflet/dist/leaflet.css"
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
 
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "z16jbeycc8");
+</script>
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3WF3C48BJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Q3WF3C48BJ');
+</script>
+    
 <style>
 
 *{
@@ -34,6 +61,7 @@ body{
     min-height:100vh;
 }
 
+    
 #sidebar{
     width:350px;
     background:#1a1a1a;
@@ -52,6 +80,11 @@ body{
     margin-bottom:20px;
 }
 
+.country-name{
+    font-family:'Cinzel', serif;
+    ter-spacing:1px;
+}
+    
 .logo img{
     width:180px;
     height:180px;
@@ -121,6 +154,12 @@ h1{
     margin-top:0;
 }
 
+.welcome-title{
+    font-family:'Chango', cursive;
+    font-size:clamp(42px, 5vw, 56px);
+    line-height:1.1;
+}
+    
 .info-card{
     background:#222;
     padding:20px;
@@ -176,7 +215,11 @@ h1{
 
     <div id="content">
 
-        <h1>Velkommen til Loge Langoustine</h1>
+        <h1 class="welcome-title">
+    Velkommen til<br>
+    Loge Langoustine
+</h1>
+
 
         <div class="info-card">
 
@@ -204,7 +247,8 @@ let currentPage = {
     type: "home"
 };
 
-
+let previousPage = null;
+let previousScrollY = 0;
 
 function t(da, en){
     return currentLanguage === "da" ? da : en;
@@ -353,14 +397,15 @@ function buildMenu(){
     </span>
 
     <span
-        style="
-            cursor:pointer;
-            padding-left:8px;
-            font-size:18px;
-        "
-        onclick="showCountry('${land}')">
-        ${land}
-    </span>
+    class="country-name"
+    style="
+        cursor:pointer;
+        padding-left:8px;
+        font-size:28px;
+    "
+    onclick="showCountry('${land}')">
+    ${land}
+</span>
 
 </div>
 
@@ -460,7 +505,10 @@ function setLanguage(lang){
 
         document.getElementById('content').innerHTML = `
 
-        <h1>Velkommen til Loge Langoustine</h1>
+        <h1 class="welcome-title">
+    Velkommen til<br>
+    Loge Langoustine
+</h1>
 
         <div class="info-card">
 
@@ -481,7 +529,10 @@ function setLanguage(lang){
 
         document.getElementById('content').innerHTML = `
 
-        <h1>Welcome to Loge Langoustine</h1>
+        <h1 class="welcome-title">
+    Welcome to<br>
+    Loge Langoustine
+</h1>
 
         <div class="info-card">
 
@@ -757,7 +808,12 @@ ${r.billede ? `
     
 function showRestaurant(name){
 
+    previousScrollY = window.scrollY;
+
+    previousPage = {...currentPage};
+
     currentPage = {
+
         type: "restaurant",
         value: name
     };
@@ -833,11 +889,62 @@ function showRestaurant(name){
 </p>
 ` : ''}
 
-        </div>
+<div style="
+    display:flex;
+    justify-content:flex-end;
+    margin-top:25px;
+">
 
-    `;
+    <button
+        onclick="closeRestaurant()"
+        style="
+            background:#333;
+            color:white;
+            border:none;
+            border-radius:8px;
+            padding:10px 16px;
+            cursor:pointer;
+        ">
+
+        ✕ Luk
+
+    </button>
+
+</div>
+
+</div>
+`;
 
 }
+
+function closeRestaurant(){
+
+    if(!previousPage) return;
+
+    if(previousPage.type === "country"){
+        showCountry(previousPage.value);
+    }
+
+    if(previousPage.type === "city"){
+        showCity(previousPage.value);
+    }
+
+    if(previousPage.type === "nearby"){
+        showNearbyMap();
+    }
+
+    setTimeout(() => {
+
+        window.scrollTo(
+            0,
+            previousScrollY
+        );
+
+    }, 50);
+
+}
+
+
 
 function showNearbyMap(){
 
