@@ -451,6 +451,18 @@ onclick="showCity('${by}')">
     ${by}
 </button>
 
+<div style="
+    margin-left:60px;
+    font-size:12px;
+    color:#888;
+">
+    ${
+        restaurants.find(
+            r => r.by === by
+        )?.region || ""
+    }
+</div>
+
             <div id="by${landIndex}${byIndex}"
                  class="hidden">
             `;
