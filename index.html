@@ -388,22 +388,20 @@ Value Hunt
     onclick="showNearbyMap()">
 
     📍 ${t(
-    "Se hvad der er i nærheden",
-    "What's nearby"
-)}
-
+        "Se hvad der er i nærheden",
+        "What's nearby"
+    )}
 
 </div>
 `;
 
     const lande = [...new Set(
-    restaurants.map(r => r.land)
-)].sort((a, b) => a.localeCompare(b, 'da'));
+        restaurants.map(r => r.land)
+    )].sort((a, b) => a.localeCompare(b, 'da'));
 
+    lande.forEach((land, landIndex) => {
 
-    lande.forEach((land,landIndex)=>{
-
-       html += `
+        html += `
 <div style="
     display:flex;
     align-items:center;
@@ -420,74 +418,71 @@ Value Hunt
     </span>
 
     <span
-    class="country-name"
-    style="
-        cursor:pointer;
-        padding-left:8px;
-        font-size:28px;
-    "
-    onclick="showCountry('${land}')">
-    ${land}
-</span>
+        class="country-name"
+        style="
+            cursor:pointer;
+            padding-left:8px;
+            font-size:28px;
+        "
+        onclick="showCountry('${land}')">
+        ${land}
+    </span>
 
 </div>
 
 <div id="land${landIndex}" class="hidden">
 `;
 
-       const byer = [...new Set(
-
-    restaurants
-    .filter(r => r.land === land)
-    .map(r => r.by)
-
-)].sort((a, b) => a.localeCompare(b, 'da'));
-
-        byer.forEach((by,byIndex)=>{
-
-            html += `
-            <button class="toggle city"
-onclick="showCity('${by}')">
-    ${by}
-</button>
-
-<div style="
-    margin-left:60px;
-    font-size:12px;
-    color:#888;
-">
-    ${
-        restaurants.find(
-            r => r.by === by
-        )?.region || ""
-    }
-</div>
-
-            <div id="by${landIndex}${byIndex}"
-                 class="hidden">
-            `;
+        const regioner = [...new Set(
 
             restaurants
-.filter(r =>
+            .filter(r =>
+                r.land === land &&
+                activeCategories[r.kategori]
+            )
+            .map(r => r.region)
 
-    r.land === land &&
-    r.by === by &&
+        )].sort((a, b) => a.localeCompare(b, 'da'));
 
-    activeCategories[r.kategori]
+        regioner.forEach(region => {
 
-)
-.forEach(r => {
+            html += `
+<div style="
+    margin-left:25px;
+    margin-top:8px;
+    color:#bbbbbb;
+    font-family:'Cinzel', serif;
+    font-size:14px;
+">
+    ${region}
+</div>
+`;
+
+            const byer = [...new Set(
+
+                restaurants
+                .filter(r =>
+                    r.land === land &&
+                    r.region === region &&
+                    activeCategories[r.kategori]
+                )
+                .map(r => r.by)
+
+            )].sort((a, b) => a.localeCompare(b, 'da'));
+
+            byer.forEach(by => {
 
                 html += `
-                <div class="restaurant"
-                     onclick="showRestaurant('${r.restaurant}')">
-                    ${r.restaurant}
-                </div>
-                `;
+<button
+    class="toggle city"
+    onclick="showCity('${by}')">
+
+    ${by}
+
+</button>
+`;
 
             });
-
-            html += `</div>`;
 
         });
 
