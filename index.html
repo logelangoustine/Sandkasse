@@ -64,7 +64,7 @@ body{
 
 .country-name{
     font-family:'Cinzel', serif;
-    ter-spacing:1px;
+    letter-spacing:1px;
 }
     
 .logo img{
@@ -702,7 +702,12 @@ function showCountry(country){
     };
 
     const countryRestaurants =
-        restaurants.filter(r => r.land === country);
+    restaurants.filter(r =>
+
+        r.land === country &&
+        activeCategories[r.kategori]
+
+    );
 
 
    let html = `
@@ -784,7 +789,12 @@ ${r.billede ? `
     };
 
     const cityRestaurants =
-        restaurants.filter(r => r.by === city);
+    restaurants.filter(r =>
+
+        r.by === city &&
+        activeCategories[r.kategori]
+
+    );
 
 
     let html = `
