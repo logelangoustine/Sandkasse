@@ -1057,6 +1057,12 @@ function showNearbyMap(){
 </script>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js');
+}
+</script>
+
 </body>
 </html>
