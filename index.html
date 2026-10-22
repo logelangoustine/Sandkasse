@@ -232,12 +232,23 @@ let currentPage = {
 let previousPage = null;
 let previousScrollY = 0;
 
+let mapMode = false;
+    
     let activeCategories = {
     "Fine Dining": true,
     "Side Dish": true,
-    "Value Hunt": true
+    "Value Hunt": true,
 };
 
+<br>
+
+<label>
+<input
+    type="checkbox"
+    onchange="toggleMapMode(this.checked)">
+Kortvisning
+</label>
+    
 function t(da, en){
     return currentLanguage === "da" ? da : en;
 }
@@ -550,6 +561,66 @@ function toggleCategory(category){
     if(currentPage.type === "nearby"){
         showNearbyMap();
     }
+
+}
+
+function toggleMapMode(value){
+
+    mapMode = value;
+
+    if(mapMode){
+
+        showMap();
+
+    }else{
+
+        document.getElementById("content").innerHTML = `
+        <h1 class="welcome-title">
+            Loge Langoustine
+        </h1>
+        `;
+    }
+
+}
+
+function showMap(){
+
+    document.getElementById("content").innerHTML = `
+        <div id="map"
+             style="
+                width:100%;
+                height:85vh;
+                border-radius:12px;
+             ">
+        </div>
+    `;
+
+    const map = L.map('map')
+        .setView([56, 11], 6);
+
+    L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+            attribution:'© OpenStreetMap'
+        }
+    ).addTo(map);
+
+    restaurants.forEach(r => {
+
+        if(!r.gps) return;
+
+        const coords = r.gps.split(',');
+
+        L.marker([
+            parseFloat(coords[0]),
+            parseFloat(coords[1])
+        ])
+        .addTo(map)
+        .bindPopup(r.restaurant);
+
+    });
+
+    window.mainMap = map;
 
 }
 
