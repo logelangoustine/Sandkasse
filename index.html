@@ -620,8 +620,7 @@ function zoomToCountry(country){
 
     countryRestaurants.forEach(r => {
 
-        const coords =
-            r.gps.split(',');
+        const coords = r.gps.split(',');
 
         bounds.push([
             parseFloat(coords[0]),
@@ -630,14 +629,30 @@ function zoomToCountry(country){
 
     });
 
-    mainMap.fitBounds(
-        bounds,
+    const tempBounds =
+        L.latLngBounds(bounds);
+
+    const center =
+        tempBounds.getCenter();
+
+    mainMap.flyTo(
+        center,
+        5,
         {
-            padding:[50,50],
-            duration:1.2,
-            easeLinearity:0.05
+            duration: 1.2
         }
     );
+
+    setTimeout(() => {
+
+        mainMap.fitBounds(
+            tempBounds,
+            {
+                padding:[50,50]
+            }
+        );
+
+    }, 1200);
 
 }
     
