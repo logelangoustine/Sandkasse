@@ -605,6 +605,32 @@ function showMap(){
 
 }
 
+function zoomToRestaurant(name){
+
+    const r =
+        restaurants.find(x =>
+            x.restaurant === name
+        );
+
+    if(!r || !r.gps) return;
+
+    const coords =
+        r.gps.split(',');
+
+    const lat =
+        parseFloat(coords[0]);
+
+    const lng =
+        parseFloat(coords[1]);
+
+    mainMap.setView(
+        [lat, lng],
+        16
+    );
+
+}
+
+    
 function toggleMenu(id, btn){
 
     document.querySelectorAll('[id^="land"]').forEach(el => {
@@ -1037,6 +1063,13 @@ function showRegion(region){
 }
     
 function showRestaurant(name){
+
+    if(mapMode){
+
+    zoomToRestaurant(name);
+    return;
+
+}
 
     previousScrollY = window.scrollY;
 
