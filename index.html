@@ -605,6 +605,40 @@ function showMap(){
 
 }
 
+function zoomToCountry(country){
+
+    const countryRestaurants =
+        restaurants.filter(r =>
+            r.land === country &&
+            r.gps
+        );
+
+    if(countryRestaurants.length === 0)
+        return;
+
+    const bounds = [];
+
+    countryRestaurants.forEach(r => {
+
+        const coords =
+            r.gps.split(',');
+
+        bounds.push([
+            parseFloat(coords[0]),
+            parseFloat(coords[1])
+        ]);
+
+    });
+
+    mainMap.fitBounds(
+        bounds,
+        {
+            padding:[50,50]
+        }
+    );
+
+}
+    
 function zoomToRestaurant(name){
 
     const r =
@@ -850,6 +884,13 @@ function getDistance(gps){
     
 function showCountry(country){
 
+if(mapMode){
+
+    zoomToCountry(country);
+    return;
+
+}
+    
     currentPage = {
         type: "country",
         value: country
