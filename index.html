@@ -239,15 +239,6 @@ let mapMode = false;
     "Side Dish": true,
     "Value Hunt": true,
 };
-
-<br>
-
-<label>
-<input
-    type="checkbox"
-    onchange="toggleMapMode(this.checked)">
-Kortvisning
-</label>
     
 function t(da, en){
     return currentLanguage === "da" ? da : en;
@@ -384,24 +375,14 @@ Side Dish
 Value Hunt
 </label>
 
-</div>
-`;
+<br>
 
-    html += `
-<div
-    style="
-        padding:10px 0;
-        margin-bottom:15px;
-        color:#7cc8ff;
-        cursor:pointer;
-        font-weight:bold;
-    "
-    onclick="showNearbyMap()">
-
-    📍 ${t(
-        "Se hvad der er i nærheden",
-        "What's nearby"
-    )}
+<label>
+<input
+    type="checkbox"
+    onchange="toggleMapMode(this.checked)">
+Kortvisning
+</label>
 
 </div>
 `;
