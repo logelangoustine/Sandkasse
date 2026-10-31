@@ -127,10 +127,11 @@ h1{
     margin-top:0;
 }
 
-.welcome-title{
-    font-family:'Chango', cursive;
-    font-size:clamp(42px, 5vw, 56px);
-    line-height:1.1;
+.home-brand{
+    display:block;
+    width:min(100%, 900px);
+    height:auto;
+    margin-bottom:28px;
 }
     
 .info-card{
@@ -377,10 +378,10 @@ h1{
         </div>
 
         <div id="content">
-            <h1 class="welcome-title">
-                Velkommen til<br>
-                Loge Langoustine
-            </h1>
+            <img
+                class="home-brand"
+                src="images/loge-langoustine.png"
+                alt="Loge Langoustine – Rituals of Taste">
 
             <div class="info-card">
                 <p>
@@ -537,10 +538,10 @@ function showHomePage(){
     `).join("");
 
     document.getElementById("content").innerHTML = `
-        <h1 class="welcome-title">
-            ${t("Velkommen til", "Welcome to")}<br>
-            Loge Langoustine
-        </h1>
+        <img
+            class="home-brand"
+            src="images/loge-langoustine.png"
+            alt="Loge Langoustine – Rituals of Taste">
 
         <div class="info-card">
             <p>${t(
