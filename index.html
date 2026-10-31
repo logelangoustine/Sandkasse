@@ -144,6 +144,53 @@ h1{
     color:#7cc8ff;
 }
 
+.review-teasers{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap:16px;
+    max-width:1100px;
+    margin-top:32px;
+}
+
+.review-teaser{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    background:#222;
+    padding:20px;
+    border:1px solid #333;
+    border-radius:12px;
+}
+
+.review-teaser h2{
+    margin:0 0 8px;
+}
+
+.review-teaser-meta{
+    margin:0;
+    color:#bbb;
+    font-size:14px;
+}
+
+.review-teaser p{
+    line-height:1.55;
+    white-space:pre-line;
+}
+
+.review-teaser button{
+    margin-top:auto;
+    padding:9px 14px;
+    border:1px solid #555;
+    border-radius:8px;
+    background:#333;
+    color:white;
+    cursor:pointer;
+}
+
+.review-teaser button:hover{
+    background:#444;
+}
+
 .review-heading{
     font-size:16px;
     font-family:'Source Sans Pro', sans-serif;
@@ -206,6 +253,12 @@ h1{
     font-weight:normal;
     line-height:1.4;
     white-space:normal;
+}
+
+@media(max-width:600px){
+    .review-teasers{
+        grid-template-columns:1fr;
+    }
 }
 
 .review-info:hover .review-info-box,
@@ -383,6 +436,135 @@ function t(da, en){
     return currentLanguage === "da" ? da : en;
 }
 
+function escapeHtml(value){
+    return value.replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[character]));
+}
+
+function reviewVisitDate(review){
+
+    const visit = review.match(/\bBesøgt:\s*([^\n]+)/i);
+    if(!visit) return 0;
+
+    const months = {
+        januar: 0,
+        februar: 1,
+        marts: 2,
+        april: 3,
+        maj: 4,
+        juni: 5,
+        juli: 6,
+        august: 7,
+        september: 8,
+        oktober: 9,
+        november: 10,
+        december: 11
+    };
+    const date = visit[1].trim().match(/^([^\s]+)\s+(\d{4})$/);
+    if(!date) return 0;
+
+    const month = months[date[1].toLocaleLowerCase("da")];
+    if(month === undefined) return 0;
+
+    return new Date(Number(date[2]), month, 1).getTime();
+}
+
+function reviewVisitLabel(review){
+
+    const visit = review.match(/\bBesøgt:\s*([^\n]+)/i);
+    return visit ? visit[1].trim() : "";
+}
+
+function reviewRating(review){
+
+    const rating = review.match(/\bSamlet karakter:\s*([\d.,]+)/i);
+    return rating ? rating[1] : "";
+}
+
+function reviewTeaserText(review){
+
+    const paragraph = review
+        .split(/\n\s*\n/)
+        .find(text => text.trim() && !/^\s*Samlet karakter:/i.test(text));
+    if(!paragraph) return "";
+
+    const text = paragraph.trim();
+    return text.length > 220
+        ? `${text.slice(0, 217).trimEnd()}...`
+        : text;
+}
+
+function reviewedRestaurants(){
+
+    return restaurants
+        .filter(restaurant =>
+            restaurant.anmeldelse &&
+            !/^\s*Anmeldelse kommer snart\s*$/i.test(restaurant.anmeldelse)
+        )
+        .sort((a, b) =>
+            reviewVisitDate(b.anmeldelse) - reviewVisitDate(a.anmeldelse)
+        )
+        .slice(0, 3);
+}
+
+function showHomePage(){
+
+    currentPage = { type: "home" };
+
+    const reviews = reviewedRestaurants();
+    const teaserCards = reviews.map(restaurant => `
+        <article class="review-teaser">
+            <h2>${escapeHtml(restaurant.restaurant)}</h2>
+            <p class="review-teaser-meta">${[
+                reviewRating(restaurant.anmeldelse)
+                    ? `${t("Karakter", "Rating")}: ${escapeHtml(reviewRating(restaurant.anmeldelse))}`
+                    : "",
+                reviewVisitLabel(restaurant.anmeldelse)
+            ].filter(Boolean).join(" · ")}</p>
+            <p>${escapeHtml(reviewTeaserText(restaurant.anmeldelse))}</p>
+            <button
+                type="button"
+                data-restaurant="${escapeHtml(restaurant.restaurant)}"
+                onclick="showRestaurant(this.dataset.restaurant)">
+                ${t("Læs hele anmeldelsen", "Read the full review")}
+            </button>
+        </article>
+    `).join("");
+
+    document.getElementById("content").innerHTML = `
+        <h1 class="welcome-title">
+            ${t("Velkommen til", "Welcome to")}<br>
+            Loge Langoustine
+        </h1>
+
+        <div class="info-card">
+            <p>${t(
+                "Velkommen til vores gastronomiske univers.",
+                "Welcome to our gastronomic universe."
+            )}</p>
+
+            <p>${t(
+                "På denne side samler vi restauranter, vinbarer og madoplevelser fra Danmark og resten af verden.",
+                "Here we collect restaurants, wine bars and dining experiences from Denmark and around the world."
+            )}</p>
+        </div>
+
+        ${reviews.length ? `
+        <section aria-labelledby="latest-reviews-title">
+            <h2 id="latest-reviews-title">${t("Nyeste anmeldelser", "Latest reviews")}</h2>
+            <div class="review-teasers">
+                ${teaserCards}
+            </div>
+        </section>
+        ` : ""}
+    `;
+}
+
 function distanceText(value){
 
     if(value < 1){
@@ -455,6 +637,9 @@ fetch('GithubRestauranter.json')
 .then(data => {
     restaurants = data;
     buildMenu();
+    if(currentPage.type === "home"){
+        showHomePage();
+    }
 })
 .catch(error => {
     console.error("Kunne ikke indlæse restauranter fra JSON:", error);
@@ -867,26 +1052,12 @@ function setLanguage(lang){
     disposeRouteNavigation();
     currentLanguage = lang;
 
-    document.getElementById('content').innerHTML = `
-        <h1 class="welcome-title">
-            ${t("Velkommen til", "Welcome to")}<br>
-            Loge Langoustine
-        </h1>
-
-        <div class="info-card">
-            <p>${t(
-                "Velkommen til vores gastronomiske univers.",
-                "Welcome to our gastronomic universe."
-            )}</p>
-
-            <p>${t(
-                "På denne side samler vi restauranter, vinbarer og madoplevelser fra Danmark og resten af verden.",
-                "Here we collect restaurants, wine bars and dining experiences from Denmark and around the world."
-            )}</p>
-        </div>
-    `;
-
     buildMenu();
+
+    if(currentPage.type === "home"){
+        showHomePage();
+        return;
+    }
 
     if(currentPage.type === "country"){
         showCountry(currentPage.value);
@@ -2372,6 +2543,10 @@ function closeRestaurant(){
 
     if(previousPage.type === "region"){
         showRegion(previousPage.value);
+    }
+
+    if(previousPage.type === "home"){
+        showHomePage();
     }
 
     if(previousPage.type === "nearby"){
