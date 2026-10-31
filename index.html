@@ -2699,6 +2699,12 @@ function showNearbyMap(){
 
 }
 
+document.addEventListener("contextmenu", event => {
+    if(event.target instanceof Element && event.target.closest("img")){
+        event.preventDefault();
+    }
+});
+
 </script>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
