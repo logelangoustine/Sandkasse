@@ -163,11 +163,34 @@ h1{
     overflow:hidden;
 }
 
-.review-teaser-image{
+.review-teaser-image-frame{
+    position:relative;
     display:block;
     width:100%;
     height:190px;
+    overflow:hidden;
+    background:#111;
+}
+
+.review-teaser-image{
+    position:absolute;
+    inset:0;
+    display:block;
+    width:100%;
+    height:100%;
     object-fit:cover;
+    opacity:0;
+    transition:opacity 900ms ease;
+}
+
+.review-teaser-image.is-visible{
+    opacity:1;
+}
+
+@media(prefers-reduced-motion:reduce){
+    .review-teaser-image{
+        transition:none;
+    }
 }
 
 .review-teaser-content{
@@ -553,12 +576,12 @@ function startReviewTeaserSlideshow(){
         reviewTeaserSlideshowTimer = null;
     }
 
-    const images = [
+    const slideshows = [
         ...document.querySelectorAll(
-            ".review-teaser-image[data-alternate-src]"
+            ".review-teaser-image-frame[data-review-slideshow]"
         )
     ];
-    if(!images.length) return;
+    if(!slideshows.length) return;
 
     let showAlternate = false;
     reviewTeaserSlideshowTimer = setInterval(() => {
@@ -569,10 +592,14 @@ function startReviewTeaserSlideshow(){
         }
 
         showAlternate = !showAlternate;
-        images.forEach(image => {
-            image.src = showAlternate
-                ? image.dataset.alternateSrc
-                : image.dataset.mainSrc;
+        slideshows.forEach(slideshow => {
+            slideshow.querySelectorAll(".review-teaser-image")
+                .forEach((image, index) => {
+                    image.classList.toggle(
+                        "is-visible",
+                        index === (showAlternate ? 1 : 0)
+                    );
+                });
         });
     }, 3000);
 }
@@ -589,14 +616,21 @@ function showHomePage(){
         return `
         <article class="review-teaser">
             ${restaurant.billede ? `
-            <img
-                class="review-teaser-image"
-                src="${escapeHtml(restaurant.billede)}"
+            <div
+                class="review-teaser-image-frame"
+                ${alternateImage ? 'data-review-slideshow' : ""}>
+                <img
+                    class="review-teaser-image is-visible"
+                    src="${escapeHtml(restaurant.billede)}"
+                    alt="${escapeHtml(restaurant.restaurant)}">
                 ${alternateImage ? `
-                data-main-src="${escapeHtml(restaurant.billede)}"
-                data-alternate-src="${escapeHtml(alternateImage)}"
+                <img
+                    class="review-teaser-image"
+                    src="${escapeHtml(alternateImage)}"
+                    alt=""
+                    aria-hidden="true">
                 ` : ""}
-                alt="${escapeHtml(restaurant.restaurant)}">
+            </div>
             ` : ""}
             <div class="review-teaser-content">
                 <h2>${escapeHtml(restaurant.restaurant)}</h2>
