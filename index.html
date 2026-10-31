@@ -309,33 +309,19 @@ if(
 );
 
 
-fetch('GithubRestauranter.csv')
-.then(response => response.text())
-.then(csv => {
-
-    const rows = csv.trim().split('\n').slice(1);
-
-    restaurants = rows.map(row => {
-
-    const cols = row.split(';');
-
-    return {
-        land: (cols[0] || "").trim(),
-        region: (cols[1] || "").trim(),
-        by: (cols[2] || "").trim(),
-        restaurant: (cols[3] || "").trim(),
-        adresse: (cols[4] || "").trim(),
-        instagram: (cols[5] || "").trim(),
-        anmeldelse: (cols[6] || "").trim(),
-        billede: (cols[7] || "").trim(),
-        gps: (cols[8] || "").trim(),
-        kategori: (cols[9] || "").trim()
-    };
-
-});
-
-buildMenu();
-
+fetch('GithubRestauranter.json')
+.then(response => {
+    if (!response.ok) {
+        throw new Error(`Kunne ikke indlæse restauranter: ${response.status}`);
+    }
+    return response.json();
+})
+.then(data => {
+    restaurants = data;
+    buildMenu();
+})
+.catch(error => {
+    console.error("Kunne ikke indlæse restauranter fra JSON:", error);
 });
 
 function buildMenu(){
