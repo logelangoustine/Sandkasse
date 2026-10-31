@@ -1,31 +1,22 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
+    <title>Loge Langoustine</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="apple-touch-icon" href="images/logo.png">
 
-<link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
-
-<link
-rel="stylesheet"
-href="https://unpkg.com/leaflet/dist/leaflet.css"
-/>
-    
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Loge Langoustine</title>
-
-<link rel="icon" type="image/png" href="images/logo.png">
-<link rel="apple-touch-icon" href="images/logo.png">
-    
-<style>
+    <style>
 
 *{
     box-sizing:border-box;
@@ -153,6 +144,87 @@ h1{
     color:#7cc8ff;
 }
 
+.review-heading{
+    font-size:16px;
+    font-family:'Source Sans Pro', sans-serif;
+    font-weight:900;
+}
+
+.review-text{
+    font-family:'Source Sans Pro', sans-serif;
+}
+
+.review-score{
+    display:inline-block;
+    white-space:nowrap;
+}
+
+.review-info{
+    position:relative;
+    display:inline-block;
+    margin-left:6px;
+    font-family:Arial,sans-serif;
+    font-size:14px;
+    font-weight:normal;
+    vertical-align:middle;
+}
+
+.review-info-button{
+    display:inline-flex;
+    width:17px;
+    height:17px;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    border:1px solid #cfcfcf;
+    border-radius:50%;
+    background:transparent;
+    color:#cfcfcf;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:bold;
+    line-height:1;
+}
+
+.review-info-box{
+    position:absolute;
+    top:calc(100% + 8px);
+    left:0;
+    z-index:10;
+    display:none;
+    width:380px;
+    max-width:calc(100vw - 48px);
+    max-height:70vh;
+    overflow-y:auto;
+    padding:12px;
+    border:1px solid #444;
+    border-radius:8px;
+    background:#333;
+    box-shadow:0 4px 12px rgba(0,0,0,.4);
+    color:white;
+    font-size:14px;
+    font-weight:normal;
+    line-height:1.4;
+    white-space:normal;
+}
+
+.review-info:hover .review-info-box,
+.review-info:focus-within .review-info-box{
+    display:block;
+}
+
+.restaurant-map-popup .review-info-box{
+    left:auto;
+    right:0;
+    width:180px;
+    max-width:calc(100vw - 80px);
+    max-height:220px;
+}
+
+.restaurant-info-popup .leaflet-popup-content{
+    overflow-x:hidden;
+}
+
 @media(max-width:900px){
 
     #container{
@@ -168,58 +240,50 @@ h1{
     }
 }
 
-</style>
+    </style>
 </head>
 <body>
+    <div id="container">
+        <div id="sidebar">
+            <div class="logo">
+                <a
+                    href="https://www.instagram.com/logelangoustine/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <img src="images/logo.png">
+                </a>
+            </div>
 
-<div id="container">
+            <div class="language-switch">
+                <button onclick="setLanguage('da')">DA</button>
+                <button onclick="setLanguage('en')">EN</button>
+            </div>
 
-    <div id="sidebar">
-
-        <div class="logo">
-    <a href="https://www.instagram.com/logelangoustine/"
-       target="_blank"
-       rel="noopener noreferrer">
-        <img src="images/logo.png">
-    </a>
-</div>
-
-        <div class="language-switch">
-            <button onclick="setLanguage('da')">DA</button>
-            <button onclick="setLanguage('en')">EN</button>
+            <div id="menu">
+                Indlæser restauranter...
+            </div>
         </div>
 
-        <div id="menu">
-            Indlæser restauranter...
-        </div>
+        <div id="content">
+            <h1 class="welcome-title">
+                Velkommen til<br>
+                Loge Langoustine
+            </h1>
 
+            <div class="info-card">
+                <p>
+                    Velkommen til vores gastronomiske univers.
+                </p>
+
+                <p>
+                    På denne side samler vi restauranter,
+                    og madoplevelser fra Danmark
+                    og resten af verden.
+                </p>
+            </div>
+        </div>
     </div>
-
-    <div id="content">
-
-        <h1 class="welcome-title">
-    Velkommen til<br>
-    Loge Langoustine
-</h1>
-
-
-        <div class="info-card">
-
-            <p>
-                Velkommen til vores gastronomiske univers.
-            </p>
-
-            <p>
-                På denne side samler vi restauranter,
-                og madoplevelser fra Danmark
-                og resten af verden.
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
 
 <script>
 
@@ -233,6 +297,7 @@ let previousPage = null;
 let previousScrollY = 0;
 
 let mapMode = false;
+let mapMarkers = [];
     
     let activeCategories = {
     "Fine Dining": true,
@@ -263,17 +328,12 @@ function distanceText(value){
 let userLat = null;
 let userLng = null;
 
-    console.log(userLat, userLng);
-
     navigator.geolocation.getCurrentPosition(
 
     position => {
 
         userLat = position.coords.latitude;
         userLng = position.coords.longitude;
-
-        console.log("GPS fundet");
-        console.log(userLat, userLng);
 
         const title =
             document.querySelector("#content h1");
@@ -302,7 +362,7 @@ if(
 
     error => {
 
-        console.log(error);
+        console.error("Kunne ikke hente din placering:", error);
 
     }
 
@@ -366,6 +426,7 @@ Value Hunt
 <label>
 <input
     type="checkbox"
+    ${mapMode ? "checked" : ""}
     onchange="toggleMapMode(this.checked)">
 Kortvisning
 </label>
@@ -541,11 +602,7 @@ function toggleMapMode(value){
 
     }else{
 
-        document.getElementById("content").innerHTML = `
-        <h1 class="welcome-title">
-            Loge Langoustine
-        </h1>
-        `;
+        setLanguage(currentLanguage);
     }
 
 }
@@ -572,22 +629,11 @@ function showMap(){
         }
     ).addTo(map);
 
-    restaurants.forEach(r => {
-
-        if(!r.gps) return;
-
-        const coords = r.gps.split(',');
-
-        L.marker([
-            parseFloat(coords[0]),
-            parseFloat(coords[1])
-        ])
-        .addTo(map)
-        .bindPopup(r.restaurant);
-
-    });
-
     window.mainMap = map;
+    mapMarkers = [];
+    setMapMarkers(
+        restaurants.filter(r => activeCategories[r.kategori])
+    );
 
 }
 
@@ -596,51 +642,35 @@ function zoomToCountry(country){
     const countryRestaurants =
         restaurants.filter(r =>
             r.land === country &&
-            r.gps
+            activeCategories[r.kategori]
         );
 
-    if(countryRestaurants.length === 0)
-        return;
+    zoomToRestaurants(countryRestaurants);
 
-    const bounds = [];
+}
 
-    countryRestaurants.forEach(r => {
+function setMapMarkers(restaurantList){
 
-        const coords = r.gps.split(',');
+    if(!window.mainMap) return [];
 
-        bounds.push([
-            parseFloat(coords[0]),
-            parseFloat(coords[1])
-        ]);
+    mapMarkers.forEach(marker => marker.remove());
+    mapMarkers = [];
 
+    const locations = [];
+
+    restaurantList.forEach(r => {
+        if(!r.gps) return;
+
+        const [lat, lng] = r.gps.split(',').map(Number);
+        if(!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+        locations.push([lat, lng]);
+        const marker = L.marker([lat, lng]).addTo(window.mainMap);
+        bindRestaurantPopup(marker, r);
+        mapMarkers.push(marker);
     });
 
-    const targetBounds =
-        L.latLngBounds(bounds);
-
-    const center =
-        targetBounds.getCenter();
-
-    mainMap.flyTo(
-        center,
-        8,
-        {
-            duration: 1.2
-        }
-    );
-
-    setTimeout(() => {
-
-        mainMap.flyToBounds(
-            targetBounds,
-            {
-                padding:[50,50],
-                duration:1.2
-            }
-        );
-
-    }, 900);
-
+    return locations;
 }
     
 function zoomToRestaurant(name){
@@ -652,44 +682,53 @@ function zoomToRestaurant(name){
 
     if(!r || !r.gps) return;
 
-    const coords =
-        r.gps.split(',');
+    const locations = setMapMarkers([r]);
+    if(locations.length === 0) return;
 
-    const lat =
-        parseFloat(coords[0]);
-
-    const lng =
-        parseFloat(coords[1]);
-
-    mainMap.setView(
-        [lat, lng],
+    window.mainMap.setView(
+        locations[0],
         16
     );
 
 }
 
-    
+function zoomToRestaurants(restaurantList){
+
+    if(!window.mainMap) return;
+
+    const locations = setMapMarkers(restaurantList);
+
+    if(locations.length === 0) return;
+
+    if(locations.length === 1){
+        window.mainMap.flyTo(
+            locations[0],
+            16,
+            {duration:1.2}
+        );
+        return;
+    }
+
+    window.mainMap.flyToBounds(
+        L.latLngBounds(locations),
+        {
+            padding:[50,50],
+            maxZoom:16,
+            duration:1.2
+        }
+    );
+}
+
+
 function toggleMenu(id, btn){
 
-    document.querySelectorAll('[id^="land"]').forEach(el => {
-
-        if(el.id !== id){
-
-            el.style.display = "none";
-
+    document.querySelectorAll('#menu > div[id^="land"]').forEach(section => {
+        if(section.id !== id){
+            section.style.display = "none";
+            section.previousElementSibling
+                .querySelector('span[onclick^="toggleMenu"]')
+                .innerHTML = "▶";
         }
-
-    });
-
-    document.querySelectorAll('#menu span').forEach(el => {
-
-        if(
-            el.innerHTML === '▼' &&
-            el !== btn
-        ){
-            el.innerHTML = '▶';
-        }
-
     });
 
     const element =
@@ -710,6 +749,17 @@ function toggleMenu(id, btn){
 }
 
 function toggleRegion(id, btn){
+
+    const countrySection = btn.parentElement.parentElement;
+
+    Array.from(countrySection.children).forEach(section => {
+        if(section.id.startsWith("region") && section.id !== id){
+            section.style.display = "none";
+            section.previousElementSibling
+                .querySelector('span[onclick^="toggleRegion"]')
+                .innerHTML = "▶";
+        }
+    });
 
     const element =
         document.getElementById(id);
@@ -732,60 +782,34 @@ function setLanguage(lang){
 
     currentLanguage = lang;
 
-    if(lang === "da"){
-
-        document.getElementById('content').innerHTML = `
-
+    document.getElementById('content').innerHTML = `
         <h1 class="welcome-title">
-    Velkommen til<br>
-    Loge Langoustine
-</h1>
+            ${t("Velkommen til", "Welcome to")}<br>
+            Loge Langoustine
+        </h1>
 
         <div class="info-card">
+            <p>${t(
+                "Velkommen til vores gastronomiske univers.",
+                "Welcome to our gastronomic universe."
+            )}</p>
 
-            <p>
-                Velkommen til vores gastronomiske univers.
-            </p>
-
-            <p>
-                På denne side samler vi restauranter,
-                vinbarer og madoplevelser fra Danmark
-                og resten af verden.
-            </p>
-
+            <p>${t(
+                "På denne side samler vi restauranter, vinbarer og madoplevelser fra Danmark og resten af verden.",
+                "Here we collect restaurants, wine bars and dining experiences from Denmark and around the world."
+            )}</p>
         </div>
-        `;
-
-    }else{
-
-        document.getElementById('content').innerHTML = `
-
-        <h1 class="welcome-title">
-    Welcome to<br>
-    Loge Langoustine
-</h1>
-
-        <div class="info-card">
-
-            <p>
-                Welcome to our gastronomic universe.
-            </p>
-
-            <p>
-                Here we collect restaurants,
-                wine bars and dining experiences
-                from Denmark and around the world.
-            </p>
-
-        </div>
-        `;
-
-    }
+    `;
 
     buildMenu();
 
     if(currentPage.type === "country"){
         showCountry(currentPage.value);
+        return;
+    }
+
+    if(currentPage.type === "region"){
+        showRegion(currentPage.value);
         return;
     }
 
@@ -813,53 +837,23 @@ function getDistance(gps){
     if(!gps || !userLat || !userLng)
         return "";
 
-    const coords = gps.split(",");
-
-    const lat = parseFloat(coords[0]);
-    const lng = parseFloat(coords[1]);
-
-    const R = 6371;
-
-    const dLat =
-        (lat - userLat) * Math.PI / 180;
-
-    const dLng =
-        (lng - userLng) * Math.PI / 180;
-
-    const a =
-        Math.sin(dLat/2) *
-        Math.sin(dLat/2) +
-
-        Math.cos(userLat*Math.PI/180) *
-        Math.cos(lat*Math.PI/180) *
-
-        Math.sin(dLng/2) *
-        Math.sin(dLng/2);
-
-    const c =
-        2 * Math.atan2(
-            Math.sqrt(a),
-            Math.sqrt(1-a)
-        );
-
-    const distance = R * c;
-
-    return distanceText(distance);
-
-
+    return distanceText(distanceInKm(gps));
 }
 
-    function getDistanceValue(gps){
+function getDistanceValue(gps){
 
     if(!gps || !userLat || !userLng)
         return 999999;
 
+    return distanceInKm(gps);
+}
+
+function distanceInKm(gps){
+
     const coords = gps.split(",");
 
     const lat = parseFloat(coords[0]);
     const lng = parseFloat(coords[1]);
-
-    const R = 6371;
 
     const dLat =
         (lat - userLat) * Math.PI / 180;
@@ -867,12 +861,15 @@ function getDistance(gps){
     const dLng =
         (lng - userLng) * Math.PI / 180;
 
+    const latitudeRadians = userLat * Math.PI / 180;
+    const destinationLatitudeRadians = lat * Math.PI / 180;
+
     const a =
         Math.sin(dLat/2) *
         Math.sin(dLat/2) +
 
-        Math.cos(userLat*Math.PI/180) *
-        Math.cos(lat*Math.PI/180) *
+        Math.cos(latitudeRadians) *
+        Math.cos(destinationLatitudeRadians) *
 
         Math.sin(dLng/2) *
         Math.sin(dLng/2);
@@ -883,10 +880,15 @@ function getDistance(gps){
             Math.sqrt(1-a)
         );
 
-    return R * c;
+    return 6371 * c;
 }
     
 function showCountry(country){
+
+    currentPage = {
+        type: "country",
+        value: country
+    };
 
 if(mapMode){
 
@@ -895,11 +897,6 @@ if(mapMode){
 
 }
     
-    currentPage = {
-        type: "country",
-        value: country
-    };
-
     const countryRestaurants =
     restaurants.filter(r =>
 
@@ -928,6 +925,8 @@ if(mapMode){
 })
 .forEach(r => {
 
+        const distance = getDistance(r.gps);
+
         html += `
 
         <div class="info-card"
@@ -939,13 +938,13 @@ if(mapMode){
 
            <h2>${r.restaurant}</h2>
 
-${getDistance(r.gps) ? `
+${distance ? `
 <p style="
     color:#bbbbbb;
     margin-top:5px;
     margin-bottom:15px;
 ">
-📍 ${getDistance(r.gps)}
+📍 ${distance}
 </p>
 ` : ''}
 
@@ -960,17 +959,6 @@ ${r.billede ? `
         margin-bottom:15px;
     ">
 ` : ''}
-
-
-            ${r.michelin ? `
-            <div style="
-                font-size:24px;
-                margin-bottom:10px;
-            ">
-                ${"⭐".repeat(parseInt(r.michelin))}
-            </div>
-            ` : ''}
-
         </div>
 
         `;
@@ -995,6 +983,10 @@ ${r.billede ? `
 
     );
 
+    if(mapMode){
+        zoomToRestaurants(cityRestaurants);
+        return;
+    }
 
     let html = `
     <h1>${city}</h1>
@@ -1007,6 +999,8 @@ ${r.billede ? `
     getDistanceValue(b.gps))
 .forEach(r => {
 
+        const distance = getDistance(r.gps);
+
         html += `
 
         <div class="info-card"
@@ -1018,13 +1012,13 @@ ${r.billede ? `
 
             <h2>${r.restaurant}</h2>
 
-${getDistance(r.gps) ? `
+${distance ? `
 <p style="
     color:#bbbbbb;
     margin-top:5px;
     margin-bottom:15px;
 ">
-📍 ${getDistance(r.gps)}
+📍 ${distance}
 </p>
 ` : ''}
 
@@ -1039,12 +1033,6 @@ ${r.billede ? `
         margin-bottom:15px;
     ">
 ` : ''}
-
-            ${r.michelin ? `
-            <div style="font-size:24px;">
-                ${"⭐".repeat(parseInt(r.michelin))}
-            </div>
-            ` : ''}
 
         </div>
 
@@ -1067,7 +1055,15 @@ function showRegion(region){
             r.region === region &&
             activeCategories[r.kategori]
 
+        ).sort((a, b) =>
+            getDistanceValue(a.gps) -
+            getDistanceValue(b.gps)
         );
+
+    if(mapMode){
+        zoomToRestaurants(regionRestaurants);
+        return;
+    }
 
     let html = `
     <h1>${region}</h1>
@@ -1107,6 +1103,133 @@ function showRegion(region){
 
 }
     
+function restaurantDetailsHtml(r, isPopup = false){
+
+    const addressLabel =
+        currentLanguage === "da"
+        ? "Adresse:"
+        : "Address:";
+
+    const distance = getDistance(r.gps);
+
+    const reviewLabel =
+        currentLanguage === "da"
+        ? "💬 Anmeldelse"
+        : "💬 Review";
+
+    const reviewText =
+        currentLanguage === "da"
+        ? (r.anmeldelse || "Ingen anmeldelse endnu")
+        : (r.anmeldelse || "No review yet");
+
+    const reviewHtml = reviewText
+        .replace(/[&<>"']/g, character => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[character]))
+        .replace(/(^|\n)(Samlet karakter:\s*\d+(?:[.,]\d+)?)/g, (match, lineBreak, heading) =>
+            `${lineBreak}<span class="review-score"><strong class="review-heading">${heading}</strong> <span class="review-info"><button type="button" class="review-info-button" aria-label="Information om samlet karakter">i</button><span class="review-info-box" role="note"><strong>Her er vores anmeldelseskategorier</strong><br><br><strong>1. Legendarisk fra 12,50 – En oplevelse der løfter sig over det sædvanlige</strong><br>Bruges ekstremt sjældent.<br>Alt spiller: råvarer, håndværk, stemning, timing, nerve.<br>Noget man taler om længe efter.<br><br><strong>2. Sublimt - tæt på det exceptionelle 11,50–12,49</strong><br>Meget højt niveau hele vejen igennem.<br>Ambitiøst, sikkert og med personlighed.<br><br><strong>3. Forrygende - Går glad derfra og anbefaler det videre 10,00 – 11,49</strong><br>Solid kvalitet med flere øjeblikke, der skiller sig ud.<br><br><strong>4. Overbevisende – Rigtig godt 9,00 – 9,99</strong><br>Velsmagende, gennemført og kompetent.<br>Ikke nødvendigvis mind‑blowing, men tydeligt veludført.<br><br><strong>5. Uforløst - Ambitionen er der men helheden mangler &gt;9</strong><br>Der er gode takter, men også plads til forbedring.<br>Potentiale mere end forløsning.</span></span></span>`
+        )
+        .replace(/(^|\n)(Spis her hvis:)/g, "$1<strong class=\"review-heading\">$2</strong>")
+        .replace(/\b(Besøgt:)(?=\s)/g, "<strong class=\"review-heading\">$1</strong>")
+        .replace(/\b(Logenote:)/g, "<strong class=\"review-heading\">$1</strong>");
+
+    const reelText =
+        currentLanguage === "da"
+        ? "🎥 Se Instagram Reel"
+        : "🎥 Watch Instagram Reel";
+
+    return `
+        ${r.billede ? `
+        <img
+            src="${r.billede}"
+            style="
+                width:100%;
+                max-height:${isPopup ? "160px" : "450px"};
+                object-fit:cover;
+                border-radius:12px;
+                margin-bottom:${isPopup ? "10px" : "20px"};
+            ">
+        ` : ''}
+        <p style="display:flex; align-items:baseline; gap:12px;">
+            <span>📍</span>
+            ${distance ? `<span style="white-space:nowrap;">${distance}</span>` : ''}
+        </p>
+
+        <p style="margin-top:-8px;">
+            <strong>${addressLabel}</strong> ${r.adresse}
+        </p>
+
+        <p class="review-text" style="white-space: pre-line;">
+            <strong>${reviewLabel}</strong><br>
+            ${reviewHtml}
+        </p>
+
+        ${r.instagram ? `
+        <p>
+            <a href="${r.instagram}"
+               target="_blank"
+               rel="noopener noreferrer">
+               ${reelText}
+            </a>
+        </p>
+        ` : ''}
+    `;
+}
+
+function bindRestaurantPopup(marker, r){
+
+    let closePopupTimeout;
+    let popupHovered = false;
+
+    marker.bindPopup(`
+        <div class="restaurant-map-popup" style="width:242px; color:white; background:#222; padding:12px; border-radius:8px;">
+            <strong style="display:block; margin-bottom:8px;">${r.restaurant}</strong>
+            <div class="info-card" style="padding:0 12px 12px; margin:0;">
+                ${restaurantDetailsHtml(r, true)}
+            </div>
+        </div>
+    `, {
+        maxWidth: 340,
+        maxHeight: 450,
+        className: 'restaurant-info-popup'
+    });
+
+    marker.on('mouseover', function(){
+        clearTimeout(closePopupTimeout);
+        this.openPopup();
+    });
+
+    marker.on('mouseout', function(){
+        closePopupTimeout = setTimeout(() => {
+            if(!popupHovered){
+                this.closePopup();
+            }
+        }, 150);
+    });
+
+    marker.on('popupopen', event => {
+        const popupElement = event.popup.getElement();
+
+        popupElement.onmouseenter = () => {
+            popupHovered = true;
+            clearTimeout(closePopupTimeout);
+        };
+
+        popupElement.onmouseleave = () => {
+            popupHovered = false;
+            marker.closePopup();
+        };
+    });
+
+    marker.on('popupclose', () => {
+        popupHovered = false;
+    });
+}
+
 function showRestaurant(name){
 
     if(mapMode){
@@ -1116,9 +1239,10 @@ function showRestaurant(name){
 
 }
 
-    previousScrollY = window.scrollY;
-
-    previousPage = {...currentPage};
+    if(currentPage.type !== "restaurant"){
+        previousScrollY = window.scrollY;
+        previousPage = {...currentPage};
+    }
 
     currentPage = {
 
@@ -1131,71 +1255,13 @@ function showRestaurant(name){
             x.restaurant === name);
 
 
-    const addressLabel =
-        currentLanguage === "da"
-        ? "📍 Adresse"
-        : "📍 Address";
-
-    const reviewLabel =
-        currentLanguage === "da"
-        ? "💬 Anmeldelse"
-        : "💬 Review";
-
-    const reviewText =
-        currentLanguage === "da"
-        ? (r.anmeldelse || "Ingen anmeldelse endnu")
-        : (r.anmeldelse || "No review yet");
-
-    const reelText =
-        currentLanguage === "da"
-        ? "🎥 Se Instagram Reel"
-        : "🎥 Watch Instagram Reel";
-
     document.getElementById('content').innerHTML = `
 
         <h1>${r.restaurant}</h1>
 
         <div class="info-card">
 
-    ${r.billede ? `
-    <img
-        src="${r.billede}"
-        style="
-            width:100%;
-            max-height:450px;
-            object-fit:cover;
-            border-radius:12px;
-            margin-bottom:20px;
-        ">
-    ` : ''}
-
-            ${r.michelin ? `
-<div style="
-    font-size:34px;
-    margin-bottom:20px;
-">
-    ${"⭐".repeat(parseInt(r.michelin))}
-</div>
-` : ''}
-
-            <p>
-                <strong>${addressLabel}</strong><br>
-                ${r.adresse}
-            </p>
-
-            <p>
-                <strong>${reviewLabel}</strong><br>
-                ${reviewText}
-            </p>
-
-            ${r.instagram ? `
-<p>
-    <a href="${r.instagram}"
-       target="_blank">
-       ${reelText}
-    </a>
-</p>
-` : ''}
+            ${restaurantDetailsHtml(r)}
 
 <div style="
     display:flex;
@@ -1235,6 +1301,10 @@ function closeRestaurant(){
 
     if(previousPage.type === "city"){
         showCity(previousPage.value);
+    }
+
+    if(previousPage.type === "region"){
+        showRegion(previousPage.value);
     }
 
     if(previousPage.type === "nearby"){
@@ -1299,14 +1369,6 @@ function showNearbyMap(){
     document.getElementById('content').innerHTML = html;
 
     const map = L.map('map').setView(
-    [userLat || 55.6761,
-     userLng || 12.5683],
-    userLat ? 11 : 7
-);
-
-    if(userLat && userLng){
-
-    map.setView(
         [userLat, userLng],
         11
     );
@@ -1323,14 +1385,11 @@ function showNearbyMap(){
     )
     .addTo(map)
     .bindPopup(
-    t(
-        "📍 Du er her",
-        "📍 You are here"
-    )
-);
-
-
-}
+        t(
+            "📍 Du er her",
+            "📍 You are here"
+        )
+    );
 
    L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -1352,17 +1411,10 @@ function showNearbyMap(){
         const lng =
             parseFloat(coords[1]);
 
-        L.marker([lat,lng])
-            .addTo(map)
-            .bindPopup(
-                `
-                <strong>${r.restaurant}</strong>
-                <br>
-                ${r.by}
-                <br>
-                ${getDistance(r.gps)}
-                `
-            );
+        bindRestaurantPopup(
+            L.marker([lat,lng]).addTo(map),
+            r
+        );
 
     });
 
