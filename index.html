@@ -193,6 +193,14 @@ h1{
     white-space:pre-line;
 }
 
+.review-teaser-excerpt{
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    line-clamp:2;
+    overflow:hidden;
+}
+
 .review-teaser button{
     margin-top:auto;
     padding:9px 14px;
@@ -553,7 +561,7 @@ function showHomePage(){
                         : "",
                     reviewVisitLabel(restaurant.anmeldelse)
                 ].filter(Boolean).join(" · ")}</p>
-                <p>${escapeHtml(reviewTeaserText(restaurant.anmeldelse))}</p>
+                <p class="review-teaser-excerpt">${escapeHtml(reviewTeaserText(restaurant.anmeldelse))}</p>
                 <button
                     type="button"
                     data-restaurant="${escapeHtml(restaurant.restaurant)}"
