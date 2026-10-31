@@ -431,6 +431,12 @@ let currentLanguage = "da";
 let currentPage = {
     type: "home"
 };
+let reviewTeaserSlideshowTimer = null;
+
+const reviewTeaserSlideshowImages = {
+    "Gastromé": "images/gastrome/1.jpg",
+    "Lyst": "images/lyst/1.jpg"
+};
 
 let previousPage = null;
 let previousScrollY = 0;
@@ -540,17 +546,56 @@ function reviewedRestaurants(){
         .slice(0, 3);
 }
 
+function startReviewTeaserSlideshow(){
+
+    if(reviewTeaserSlideshowTimer !== null){
+        clearInterval(reviewTeaserSlideshowTimer);
+        reviewTeaserSlideshowTimer = null;
+    }
+
+    const images = [
+        ...document.querySelectorAll(
+            ".review-teaser-image[data-alternate-src]"
+        )
+    ];
+    if(!images.length) return;
+
+    let showAlternate = false;
+    reviewTeaserSlideshowTimer = setInterval(() => {
+        if(currentPage.type !== "home"){
+            clearInterval(reviewTeaserSlideshowTimer);
+            reviewTeaserSlideshowTimer = null;
+            return;
+        }
+
+        showAlternate = !showAlternate;
+        images.forEach(image => {
+            image.src = showAlternate
+                ? image.dataset.alternateSrc
+                : image.dataset.mainSrc;
+        });
+    }, 3000);
+}
+
 function showHomePage(){
 
     currentPage = { type: "home" };
 
     const reviews = reviewedRestaurants();
-    const teaserCards = reviews.map(restaurant => `
+    const teaserCards = reviews.map(restaurant => {
+        const alternateImage =
+            reviewTeaserSlideshowImages[restaurant.restaurant];
+
+        return `
         <article class="review-teaser">
             ${restaurant.billede ? `
             <img
                 class="review-teaser-image"
                 src="${escapeHtml(restaurant.billede)}"
+                ${alternateImage ? `
+                data-main-src="${escapeHtml(restaurant.billede)}"
+                data-alternate-src="${escapeHtml(alternateImage)}"
+                ` : ""}
                 alt="${escapeHtml(restaurant.restaurant)}">
             ` : ""}
             <div class="review-teaser-content">
@@ -570,7 +615,8 @@ function showHomePage(){
                 </button>
             </div>
         </article>
-    `).join("");
+    `;
+    }).join("");
 
     document.getElementById("content").innerHTML = `
         <img
@@ -599,6 +645,8 @@ function showHomePage(){
         </section>
         ` : ""}
     `;
+
+    startReviewTeaserSlideshow();
 }
 
 function distanceText(value){
